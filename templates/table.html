@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+<div class="jumbotron text-center">
+  <h1>Welcome to Air CNC</h1>
+  <p>list of reservations</p>
+</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title >Booked rooms</title>
+</head>
+<body>
+<main role="main" class="container">
+    <ul>
+        <table class="table">
+
+            {% for i in list %}
+                <thead>
+                <th>Listing</th>
+                <th>Name</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Rented by</th>
+                </thead>
+                {% for room in i.rooms.all %}
+                    {#            <ul>{{ room }}</ul>#}
+                    {% for reservation in room.reservations.all %}
+                        <tr>
+                            <td>{{ i.unit_heading }}</td>
+                            <td>{{ room.room_heading }}</td>
+                            <td>{{ reservation.start }}</td>
+                            <td>{{ reservation.end }}</td>
+                            <td>{{ reservation.rented_by }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </ul>
+
+</main>
+
+</body>
+</html>
