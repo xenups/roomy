@@ -24,8 +24,8 @@ def get_owner_listings_controller(request):
 def make_reservation_controller(request):
     serializer = ReserveSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    reservation_req = from_dict(data_class=ReservationRequest, data=serializer.data)
-    service_response = ReservationService().reserve(reservation_req)
+    req = from_dict(data_class=ReservationRequest, data=serializer.data)
+    service_response = ReservationService().reserve(req)
     if service_response.successful:
         room_data = ReservationSerializer(service_response.response)
         return Response(room_data.data, status=status.HTTP_200_OK)

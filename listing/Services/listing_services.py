@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.utils.dateparse import parse_datetime
@@ -25,9 +23,9 @@ class RoomService(object):
     def __init__(self):
         self.roomRepository = RoomRepository()
 
-    def get_available(self, available_room_req: AvailableRoomRequest):
-        start = parse_datetime(available_room_req.start)
-        end = parse_datetime(available_room_req.end)
+    def get_available(self, reqeust: AvailableRoomRequest):
+        start = parse_datetime(reqeust.start)
+        end = parse_datetime(reqeust.end)
         room = self.roomRepository.get_available(start=start, end=end)
         response = ServiceResponse(response=room, successful=True)
         return response
