@@ -36,8 +36,9 @@ def make_reservation_controller(request):
 @api_view(["GET"])
 @permission_classes((AllowAny,))
 def get_available_rooms_controller(request):
-    date = request.GET.get("date")
-    req = AvailableRoomRequest(date=date)
+    start = request.GET.get("start")
+    end = request.GET.get("end")
+    req = AvailableRoomRequest(start=start, end=end)
     service_response = RoomService().get_available(req)
     if service_response.successful:
         serializer = RoomSerializer(service_response.response, many=True)

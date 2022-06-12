@@ -11,4 +11,5 @@ class ReservationRequest:
 
 @dataclasses.dataclass
 class AvailableRoomRequest:
-    date: str
+    start: str
+    end: str

@@ -26,8 +26,9 @@ class RoomService(object):
         self.roomRepository = RoomRepository()
 
     def get_available(self, available_room_req: AvailableRoomRequest):
-        date = parse_datetime(available_room_req.date)
-        room = self.roomRepository.get_available(date)
+        start = parse_datetime(available_room_req.start)
+        end = parse_datetime(available_room_req.end)
+        room = self.roomRepository.get_available(start=start, end=end)
         response = ServiceResponse(response=room, successful=True)
         return response
 
@@ -38,7 +39,7 @@ class ReservationService(object):
 
     def reserve(self, reservation_req: ReservationRequest):
         try:
-            if self.reservation_repository.is_available(parse_datetime(reservation_req.start),
+            if self.reservation_repository.is_available(reservation_req.room_id, parse_datetime(reservation_req.start),
                                                         parse_datetime(reservation_req.end)):
                 reservation = self.reservation_repository.create(reservation_req)
                 return ServiceResponse(response=reservation, successful=True, status=ServiceState.Reserved)

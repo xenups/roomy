@@ -25,8 +25,9 @@ class RoomRepository:
     def list(self):
         return self.room.objects.all()
 
-    def get_available(self, date):
-        return self.room.objects.filter(Q(reservations__end__lt=date) | Q(reservations__isnull=True)).all()
+    def get_available(self, start, end):
+        return self.room.objects.filter(~Q(reservations__start__lte=end, reservations__end__gte=start) | Q(
+            reservations__isnull=True)).distinct().all()
 
 
 class ListingRepository:
@@ -66,8 +67,9 @@ class ReservationRepository:
         except Listing.DoesNotExist:
             return None
 
-    def is_available(self, start, end):
-        if self.reservation.objects.filter(start__lte=end, end__gte=start).first():
+    def is_available(self, room_id, start, end):
+        room = get_object_or_404(Room, id=room_id)
+        if self.reservation.objects.filter(start__lte=end, end__gte=start, room=room).first():
             return False
         return True
 
