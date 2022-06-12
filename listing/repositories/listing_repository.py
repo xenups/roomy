@@ -8,17 +8,11 @@ from ..models import Listing, Room, Reservation
 
 
 def listing_rooms(listing_id=1):
-    try:
-        return Room.objects.filter(rental_unit_id=listing_id).all()
-    except Listing.DoesNotExist:
-        raise Http404
+    return Room.objects.filter(rental_unit_id=listing_id).all()
 
 
 def get_available_listing():
-    try:
-        return Listing.objects.filter(rooms__is_rented=False).all()
-    except Listing.DoesNotExist:
-        raise Http404
+    return Listing.objects.filter(rooms__is_rented=False).all()
 
 
 class RoomRepository:
@@ -29,16 +23,10 @@ class RoomRepository:
         return get_object_or_404(self.room, id=pk)
 
     def list(self):
-        try:
-            return self.room.objects.all()
-        except self.room.DoesNotExist:
-            raise None
+        return self.room.objects.all()
 
     def get_available(self, date):
-        try:
-            return self.room.objects.filter(Q(reservations__end__lt=date) | Q(reservations__isnull=True)).all()
-        except Listing.DoesNotExist:
-            raise Http404
+        return self.room.objects.filter(Q(reservations__end__lt=date) | Q(reservations__isnull=True)).all()
 
 
 class ListingRepository:
@@ -49,16 +37,10 @@ class ListingRepository:
         return self.Listing.objects.filter(owner=owner)
 
     def get(self, pk: int):
-        try:
-            return self.Listing.objects.get(pk=pk)
-        except Listing.DoesNotExist:
-            raise Http404
+        return get_object_or_404(self.Listing, pk=pk)
 
     def list(self):
-        try:
-            return self.Listing.objects.all()
-        except Listing.DoesNotExist:
-            raise Http404
+        return self.Listing.objects.all()
 
 
 class ReservationRepository:
@@ -79,10 +61,10 @@ class ReservationRepository:
         return get_object_or_404(self.reservation, id=pk)
 
     def get_last_one(self, room_id):
-        return self.reservation.objects.filter(room_id=room_id).last()
+        try:
+            return self.reservation.objects.filter(room_id=room_id).last()
+        except Listing.DoesNotExist:
+            return None
 
     def list(self):
-        try:
-            return self.reservation.objects.all()
-        except self.reservation.DoesNotExist:
-            raise None
+        return self.reservation.objects.all()

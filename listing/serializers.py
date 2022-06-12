@@ -1,3 +1,4 @@
+from django.utils.dateparse import parse_datetime
 from rest_framework import serializers
 from . import models
 
@@ -6,6 +7,11 @@ class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Reservation
         fields = ('id', 'rented_by', 'start', 'end')
+
+    def validate(self, data):
+        if parse_datetime(data['start']) > parse_datetime(data['end']):
+            raise serializers.ValidationError("end must occur after start")
+        return data
 
 
 class RoomSerializer(serializers.ModelSerializer):

@@ -5,7 +5,7 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .Domains.listing_domains import ReservationRequest, AvailableRoomRequest
-from .Exeptions.listing_exeptions import ApiException, ServiceUnavailable
+from .Exeptions.listing_exeptions import ServiceUnavailable
 from .Services.listing_services import RoomService, ListingService, ReservationService
 from .serializers import ListingSerializer, RoomSerializer, ReserveSerializer, ReservationSerializer
 
@@ -30,7 +30,7 @@ def make_reservation_controller(request):
     if service_response.successful:
         room_data = ReservationSerializer(service_response.response)
         return Response(room_data.data, status=status.HTTP_200_OK)
-    raise ApiException(detail=service_response.response, status_code=service_response.status)
+    return Response(data=service_response.response, status=service_response.state)
 
 
 @api_view(["GET"])
@@ -46,8 +46,8 @@ def get_available_rooms_controller(request):
 
 
 def owner_listing_view(request):
-    listing_response = ListingService().get_owners_listing(username="admin")
-
+    username = request.GET.get("username")
+    listing_response = ListingService().get_owners_listing(username=username)
     context = {
         "list": listing_response.response,
     }

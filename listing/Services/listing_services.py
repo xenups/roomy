@@ -8,11 +8,17 @@ from listing.Domains.listing_domains import ReservationRequest, AvailableRoomReq
 from listing.repositories.listing_repository import RoomRepository, ListingRepository, ReservationRepository
 
 
+class ServiceState:
+    RoomIsFull = 409
+    Reserved = 200
+    Unavailable = 503
+
+
 class ServiceResponse:
     def __init__(self, successful, response=None, status=503):
         self.successful = successful
         self.response = response
-        self.status = status
+        self.state = status
 
 
 class RoomService(object):
@@ -36,10 +42,11 @@ class ReservationService(object):
         try:
             if reservation is None or reservation_time_req > reservation.end + timedelta(hours=8):
                 reservation = self.reservation_repository.create(reservation_req)
-                return ServiceResponse(response=reservation, successful=True, status=200)
-            return ServiceResponse(response="room is full", successful=False, status=409)
+                return ServiceResponse(response=reservation, successful=True, status=ServiceState.Reserved)
+            return ServiceResponse(response={"detail": "room is full"}, successful=False,
+                                   status=ServiceState.RoomIsFull)
         except Exception as e:
-            return ServiceResponse(response=e.args, successful=False, status=503)
+            return ServiceResponse(response=e.args[0], successful=False, status=ServiceState.Unavailable)
 
 
 class ListingService(object):
@@ -53,5 +60,4 @@ class ListingService(object):
             response = ServiceResponse(response=listings, successful=True)
             return response
         except Exception as e:
-            print(e)
             return ServiceResponse(successful=False)

@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -38,6 +39,14 @@ class Reservation(models.Model):
     room = models.ForeignKey('Room', on_delete=models.CASCADE, related_name='reservations')
     start = models.DateTimeField()
     end = models.DateTimeField()
+
+    def clean(self):
+        if self.end < self.start:
+            raise ValidationError("Finish must occur after start")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.room.room_heading + " rented by " + self.rented_by
