@@ -37,11 +37,11 @@ class ReservationService(object):
     def __init__(self):
         self.reservation_repository = ReservationRepository()
 
-    def reserve(self, reservation_req: ReservationRequest):
+    def reserve(self, request: ReservationRequest):
         try:
-            if self.reservation_repository.is_available(reservation_req.room_id, parse_datetime(reservation_req.start),
-                                                        parse_datetime(reservation_req.end)):
-                reservation = self.reservation_repository.create(reservation_req)
+            if self.reservation_repository.is_available(request.room_id, parse_datetime(request.start),
+                                                        parse_datetime(request.end)):
+                reservation = self.reservation_repository.create(request)
                 return ServiceResponse(response=reservation, successful=True, status=ServiceState.Reserved)
             return ServiceResponse(response={"detail": "room is full"}, successful=False,
                                    status=ServiceState.RoomIsFull)
