@@ -66,5 +66,10 @@ class ReservationRepository:
         except Listing.DoesNotExist:
             return None
 
+    def is_available(self, start, end):
+        if self.reservation.objects.filter(start__lte=end, end__gte=start).first():
+            return False
+        return True
+
     def list(self):
         return self.reservation.objects.all()

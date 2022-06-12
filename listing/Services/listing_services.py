@@ -37,10 +37,9 @@ class ReservationService(object):
         self.reservation_repository = ReservationRepository()
 
     def reserve(self, reservation_req: ReservationRequest):
-        reservation = self.reservation_repository.get_last_one(reservation_req.room_id)
-        reservation_time_req = parse_datetime(reservation_req.start)
         try:
-            if reservation is None or reservation_time_req > reservation.end + timedelta(hours=8):
+            if self.reservation_repository.is_available(parse_datetime(reservation_req.start),
+                                                        parse_datetime(reservation_req.end)):
                 reservation = self.reservation_repository.create(reservation_req)
                 return ServiceResponse(response=reservation, successful=True, status=ServiceState.Reserved)
             return ServiceResponse(response={"detail": "room is full"}, successful=False,
@@ -60,4 +59,4 @@ class ListingService(object):
             response = ServiceResponse(response=listings, successful=True)
             return response
         except Exception as e:
-            return ServiceResponse(successful=False)
+            return ServiceResponse(response=e.args[0], successful=False)
