@@ -5,7 +5,6 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .Domains.listing_domains import ReservationRequest, AvailableRoomRequest
-from .Exeptions.listing_exeptions import ServiceUnavailable
 from .Services.listing_services import RoomService, ListingService, ReservationService
 from .serializers import ListingSerializer, RoomSerializer, ReserveSerializer, ReservationSerializer
 
