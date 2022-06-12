@@ -17,7 +17,7 @@ def get_owner_listings_controller(request):
     if listing_response.successful:
         serializer = ListingSerializer(listing_response.response, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    raise ServiceUnavailable()
+    return Response(data=listing_response.response, status=listing_response.state)
 
 
 @api_view(["POST"])
@@ -42,7 +42,7 @@ def get_available_rooms_controller(request):
     if service_response.successful:
         serializer = RoomSerializer(service_response.response, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    raise ServiceUnavailable()
+    return Response(data=service_response.response, status=service_response.state)
 
 
 def owner_listing_view(request):
