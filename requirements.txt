@@ -1,0 +1,5 @@
+Django==3.2.13
+dacite==1.6.0
+django-debug-toolbar==3.4.0
+djangorestframework==3.13.1
+pip-chill==1.0.1
