@@ -17,7 +17,7 @@ class Listing(models.Model):
 
     @property
     def rented_room_count(self):
-        return self.rooms.filter(reservations__end__gt=timezone.now()).count()
+        return self.rooms.filter(reservations__end__gte=timezone.now(), reservations__start__lte=timezone.now()).count()
 
     @property
     def room_count(self):
