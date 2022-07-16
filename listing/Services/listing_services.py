@@ -35,7 +35,7 @@ class ReservationService(object):
     def __init__(self):
         self.reservation_repository = ReservationRepository()
 
-    def reserve(self, request: ReservationRequest):
+    def execute(self, request: ReservationRequest):
         try:
             if self.reservation_repository.is_available(request.room_id, parse_datetime(request.start),
                                                         parse_datetime(request.end)):
